@@ -15,21 +15,28 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 
 #    && rm -rf /var/lib/apt/lists/*
 
-ENV NAGIOS_VERSION=4.4.4 \
-    PLUGIN_VERSION=2.2.1
-
 EXPOSE 80
+
+COPY nagios.conf /etc/apache2/sites-available/nagios.conf
 
 RUN useradd nagios && \
     groupadd nagcmd && \
     usermod -a -G nagcmd nagios && \
-    usermod -a -G nagcmd www-data
+    usermod -a -G nagcmd www-data && \
+    a2dissite 000-default && \
+    a2ensite nagios && \
+    a2enmod cgi rewrite && \
+    mkdir -p /usr/local/nagios/etc && \
+    htpasswd -b -c /usr/local/nagios/etc/htpasswd.users nagiosadmin nagiosadmin
 
-RUN cd /opt && \
-    wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-${NAGIOS_VERSION}.tar.gz && \
-    tar xzf nagios-${NAGIOS_VERSION}.tar.gz
+ENV NAGIOS_VERSION=4.4.4 \
+    PLUGIN_VERSION=2.2.1
 
-RUN cd /opt/nagios-${NAGIOS_VERSION} && \
+WORKDIR /opt
+
+RUN wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-${NAGIOS_VERSION}.tar.gz && \
+    tar xzf nagios-${NAGIOS_VERSION}.tar.gz && \
+    cd nagios-${NAGIOS_VERSION} && \
     ./configure --with-command-group=nagcmd && \
     make all && \
     make install && \
@@ -41,15 +48,7 @@ RUN cd /opt/nagios-${NAGIOS_VERSION} && \
     cp -R contrib/eventhandlers/ /usr/local/nagios/libexec/ && \
     chown -R nagios:nagios /usr/local/nagios/libexec/eventhandlers
 
-COPY nagios.conf /etc/apache2/sites-available/nagios.conf
-RUN a2dissite 000-default && \
-    a2ensite nagios && \
-    a2enmod cgi rewrite
-
-RUN htpasswd -b -c /usr/local/nagios/etc/htpasswd.users nagiosadmin nagiosadmin
-
-RUN cd /opt && \
-    wget http://www.nagios-plugins.org/download/nagios-plugins-${PLUGIN_VERSION}.tar.gz && \
+RUN wget http://www.nagios-plugins.org/download/nagios-plugins-${PLUGIN_VERSION}.tar.gz && \
     tar xzf nagios-plugins-${PLUGIN_VERSION}.tar.gz && \
     cd nagios-plugins-${PLUGIN_VERSION} && \
     ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-openssl && \
