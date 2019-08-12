@@ -11,9 +11,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
             php-gd \
             unzip \
             vim \
-            wget
-
-#    && rm -rf /var/lib/apt/lists/*
+            wget \
+    && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 80
 
