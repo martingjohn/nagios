@@ -51,9 +51,8 @@ RUN htpasswd -b -c /usr/local/nagios/etc/htpasswd.users nagiosadmin nagiosadmin
 RUN cd /opt && \
     wget http://www.nagios-plugins.org/download/nagios-plugins-${PLUGIN_VERSION}.tar.gz && \
     tar xzf nagios-plugins-${PLUGIN_VERSION}.tar.gz && \
-    cd nagios-plugins-${PLUGIN_VERSION}
-
-RUN ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-openssl && \
+    cd nagios-plugins-${PLUGIN_VERSION} && \
+    ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-openssl && \
     make && \
     make install
 
