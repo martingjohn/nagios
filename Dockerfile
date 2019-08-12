@@ -37,9 +37,8 @@ RUN cd /opt/nagios-${NAGIOS_VERSION} && \
     make install-daemoninit && \
     make install-config && \
     make install-commandmode && \
-    make install-exfoliation
-
-RUN cp -R contrib/eventhandlers/ /usr/local/nagios/libexec/ && \
+    make install-exfoliation && \
+    cp -R contrib/eventhandlers/ /usr/local/nagios/libexec/ && \
     chown -R nagios:nagios /usr/local/nagios/libexec/eventhandlers
 
 COPY nagios.conf /etc/apache2/sites-available/nagios.conf
