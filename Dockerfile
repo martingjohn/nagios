@@ -24,12 +24,12 @@ RUN useradd nagios && \
     usermod -a -G nagcmd www-data && \
     a2dissite 000-default && \
     a2ensite nagios && \
-    a2enmod cgi rewrite && \
-    mkdir -p /usr/local/nagios/etc && \
-    htpasswd -b -c /usr/local/nagios/etc/htpasswd.users nagiosadmin nagiosadmin
+    a2enmod cgi rewrite
 
 ENV NAGIOS_VERSION=4.4.4 \
-    PLUGIN_VERSION=2.2.1
+    PLUGIN_VERSION=2.2.1 \
+    NAGIOSADMIN_USER=nagiosadmin \
+    NAGIOSADMIN_PASS=nagiosadmin
 
 WORKDIR /opt
 
@@ -57,6 +57,6 @@ RUN wget http://www.nagios-plugins.org/download/nagios-plugins-${PLUGIN_VERSION}
 COPY entrypoint.sh /root
 
 ENTRYPOINT ["/bin/bash"]
-#CMD ["/root/entrypoint.sh"]
+CMD ["/root/entrypoint.sh"]
 
 
