@@ -1,6 +1,8 @@
 # nagios
 Added speedtest-cli (https://github.com/sivel/speedtest-cli) to jasonrivers/nagios, so I can use speedtest-cli plugin (https://exchange.nagios.org/directory/Plugins/Network-Connections%2C-Stats-and-Bandwidth/check_speedtest-2Dcli/details)
 
+Added php-curl so I can use the Unifi plugin
+
 I run with (obviously most of the options come from jasonrivers/nagios image
 
     docker run \
